@@ -1,0 +1,17 @@
+grpc-tunnel:
+    run-as-user: root
+    path: /opt/srlinux/usr/bin/
+    #launch-command: GODEBUG=http2debug=2 ./srl-grpc-tunnel -d
+    launch-command: ./srl-grpc-tunnel
+    search-command: ./srl-grpc-tunnel
+    version-command: /opt/srlinux/usr/bin/srl-grpc-tunnel -v
+    wait-for-config: Yes
+    failure-threshold: 10
+    yang-modules:
+        names: 
+            - "grpc-tunnel"
+        source-directories:
+            - "/opt/grpc-tunnel/yang/"
+            - "/opt/srlinux/models/srl_nokia/models/common"
+            - "/opt/srlinux/models/srl_nokia/models/network-instance"
+            - "/opt/srlinux/models/srl_nokia/models/system"

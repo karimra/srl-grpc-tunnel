@@ -1,0 +1,28 @@
+# nfpm example config file
+name: "srl-grpc-tunnel"
+arch: "amd64"
+platform: "linux"
+version: "v1"
+section: "default"
+priority: "extra"
+replaces:
+- srl-grpc-tunnel
+provides:
+- srl-grpc-tunnel
+maintainer: "Karim Radhouani <karim.radhouani@nokia.com>"
+description: |
+  "SRL Prometheus exporter"
+vendor: "Nokia"
+license: "BSD 2"
+contents:
+  - src: ./builds/srl-grpc-tunnel
+    dst: /opt/srlinux/usr/bin/srl-grpc-tunnel
+  # - src: ./builds/srl-grpc-tunnel
+  #   dst: /opt/srlinux/usr/bin/grpc-tunnel
+  - src: ./yang/grpc-tunnel.yang
+    dst: /opt/grpc-tunnel/yang/grpc-tunnel.yang
+  - src: ./yaml/grpc-tunnel.yaml
+    dst: /etc/opt/srlinux/appmgr/grpc-tunnel.yml
+overrides:
+  rpm:
+    scripts:
