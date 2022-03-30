@@ -103,7 +103,7 @@ enter candidate
 # create destination d1
 / system grpc-tunnel destination d1 
 # set an address and a port number for d1
-/ system grpc-tunnel destination d1 address 172.20.20.2 port 57405 # (default port 57401)
+/ system grpc-tunnel destination d1 address 172.20.20.2 port 57401 # (default port 57401)
 # use a non secure connection for d1
 / system grpc-tunnel destination d1 no-tls true
 # use network-instance mgmt to connect to destination d1 (default: mgmt)
@@ -137,6 +137,7 @@ gnmic -a clab-grpc-tunnel-srl1 -u admin -p admin --skip-verify set \
 Create a Tunnel `t1` and link the destination `d1` to it.
 
 A max of 16 tunnels can be created, To each one, 16 destinations can be linked.
+
 #### CLI
 
 To configure a gRPC tunnel `t1` run the below commands:
@@ -209,4 +210,41 @@ commit now
 ```bash
 gnmic -a clab-grpc-tunnel-srl1 -u admin -p admin --skip-verify set \
     --update /system/grpc-tunnel/tunnel[name=t1]/admin-state:::json_ietf:::enable \
+```
+
+## State
+
+```text
+--{ + running }--[ system grpc-tunnel ]--                                                 
+A:srl1# info from state                                                                   
+    admin-state enable
+    oper-state up
+    destination d1 {
+        address 172.20.20.2
+        port 57401
+        network-instance mgmt
+        no-tls true
+    }
+    tunnel t1 {
+        admin-state enable
+        oper-state up
+        oper-state-down-reason ""
+        destination d1 {
+            oper-state up
+            oper-state-down-reason ""
+            target srl1 type GNMI_GNOI {
+                oper-state up
+                oper-state-down-reason ""
+            }
+        }
+        target tg1 {
+            id {
+                node-name
+            }
+            type {
+                grpc-server
+            }
+        }
+    }
+--{ + running }--[ system grpc-tunnel ]--   
 ```
