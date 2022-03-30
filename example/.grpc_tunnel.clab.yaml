@@ -1,0 +1,67 @@
+name: grpc-tunnel
+
+topology:
+  kinds:
+    srl:
+      image: ghcr.io/nokia/srlinux:latest
+      binds:
+        - ./rpm:/tmp/rpm:ro
+
+  nodes:
+    srl1:
+      kind: srl
+    srl2:
+      kind: srl
+    
+    gnmic1:
+      kind: linux
+      image: ghcr.io/karimra/gnmic:latest
+      binds:
+        - ./gnmic.yaml:/app/gnmic.yaml:ro
+      cmd: '--config /app/gnmic.yaml --log subscribe --use-tunnel-server'
+      ports:
+        - 57400:57400/tcp
+        - 57401:57401/tcp
+      env:
+        GNMIC_OUTPUTS_OUTPUT1_LISTEN: clab-grpc-tunnel-gnmic1:9804
+
+    gnmic2:
+      kind: linux
+      image: ghcr.io/karimra/gnmic:latest
+      binds:
+        - ./gnmic.yaml:/app/gnmic.yaml:ro
+      cmd: '--config /app/gnmic.yaml --log subscribe --use-tunnel-server'
+      ports:
+        - 57500:57400/tcp
+        - 57501:57401/tcp
+      env:
+        GNMIC_OUTPUTS_OUTPUT1_LISTEN: clab-grpc-tunnel-gnmic2:9804
+
+    prometheus:
+      kind: linux
+      image: prom/prometheus:latest
+      #network-mode: host
+      user: 65534:65534 
+      ports:
+        - 9090:9090
+      binds:
+        - ./prometheus/:/etc/prometheus/
+        #- ./prometheus/storage:/prometheus
+      cmd: |
+        --config.file=/etc/prometheus/prometheus.yaml 
+        #--storage.tsdb.path=/prometheus 
+        --web.console.libraries=/usr/share/prometheus/console_libraries 
+        --web.console.templates=/usr/share/prometheus/consoles 
+        --log.level=debug
+
+    consul-agent:
+      kind: linux
+      image: consul:latest
+      ports:
+        - 8500:8500
+        - 8600:8600/udp
+      cmd: 'agent -server -ui -bind=127.0.0.1 -node=server-1 -bootstrap-expect=1 -client=0.0.0.0'
+
+  links:
+    - endpoints: ["srl1:e1-1", "srl2:e1-1"]
+

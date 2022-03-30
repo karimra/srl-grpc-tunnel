@@ -24,6 +24,12 @@ It connects to a gRPC tunnel server such as [gNMIc](https://gnmic.kmrd.dev/user_
 
 ## Installation
 
+### Automated install with lab
+
+For an automated lab deployment with 2 SR Linux, 2 gNMIc (tunnel server), a Prometheus server and a consul server see [here](https://github.com/karimra/srl-grpc-tunnel/tree/main/example#readme)
+
+### Manual installation
+
 Download the pre build RPM file from the repo's [release page](https://github.com/karimra/srl-grpc-tunnel/releases), or run:
 
 ```bash

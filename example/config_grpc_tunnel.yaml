@@ -1,0 +1,30 @@
+updates:
+  - path: /system/grpc-tunnel
+    encoding: json_ietf
+    value:
+      admin-state: enable
+      
+      destination:
+        - name: d1
+          address: {{ .Vars.Destination1 }}
+          port: 57401
+          network-instance: mgmt
+          no-tls: true
+        - name: d2
+          address: {{ .Vars.Destination2 }}
+          port: 57401
+          network-instance: mgmt
+          no-tls: true
+      
+      tunnel:
+        name: t1
+        admin-state: enable
+        destination: 
+          - name: d1
+          - name: d2
+        target:
+          name: tg1
+          id:
+            node-name: [null]
+          type:
+            grpc-server: [null]

@@ -1,0 +1,30 @@
+username: admin
+password: admin
+insecure: true
+encoding: json_ietf
+log: true
+
+tunnel-server:
+  address: ":57401"
+  debug: true
+  targets:
+    - id: .*
+      type: GNMI_GNOI
+
+# gnmi-server:
+#   address: ":57400"
+  
+subscriptions:
+  # Add subscriptions configuration here
+  # e.g:
+  sub1:
+    paths:
+      - /interface/statistics
+    stream-mode: sample
+    sample-interval: 10s
+
+outputs:
+  output1:
+    type: prometheus
+    service-registration:
+      address: clab-grpc-tunnel-consul-agent:8500
