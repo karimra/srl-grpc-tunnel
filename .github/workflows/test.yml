@@ -1,0 +1,29 @@
+---
+name: Test
+on:
+  pull_request:
+  push:
+    branches:
+      - "master"
+      - "!releases/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Configure git for private modules
+        env:
+          TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: git config --global url."https://karimra:${TOKEN}@github.com".insteadOf "https://github.com"
+      - run: go test -cover ./...
+        env:
+          CGO_ENABLED: 0
+
+      - name: Staticcheck
+        run: |
+          go get -u honnef.co/go/tools/cmd/staticcheck
+          staticcheck ./...
