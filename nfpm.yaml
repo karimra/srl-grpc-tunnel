@@ -17,8 +17,6 @@ license: "BSD 2"
 contents:
   - src: ./builds/srl-grpc-tunnel
     dst: /opt/srlinux/usr/bin/srl-grpc-tunnel
-  # - src: ./builds/srl-grpc-tunnel
-  #   dst: /opt/srlinux/usr/bin/grpc-tunnel
   - src: ./yang/grpc-tunnel.yang
     dst: /opt/grpc-tunnel/yang/grpc-tunnel.yang
   - src: ./yaml/grpc-tunnel.yaml
