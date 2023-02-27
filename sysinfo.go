@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/karimra/gnmic/utils"
 	"github.com/openconfig/gnmi/proto/gnmi"
+	"github.com/openconfig/gnmic/utils"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

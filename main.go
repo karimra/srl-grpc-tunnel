@@ -7,7 +7,7 @@ import (
 
 	"time"
 
-	"github.com/karimra/srl-ndk-demo/agent"
+	agent "github.com/karimra/srl-ndk-demo"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/metadata"
 )
@@ -40,7 +40,7 @@ func main() {
 	ctx = metadata.AppendToOutgoingContext(ctx, "agent_name", agentName)
 
 CRAGENT:
-	app, err := agent.NewAgent(ctx, agentName)
+	app, err := agent.New(ctx, agentName)
 	if err != nil {
 		log.Errorf("failed to create agent %q: %v", agentName, err)
 		log.Infof("retrying in %s", retryInterval)

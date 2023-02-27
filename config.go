@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	ndk "github.com/karimra/go-srl-ndk"
+	"github.com/nokia/srlinux-ndk-go/ndk"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -85,7 +85,7 @@ type targetState struct {
 
 type target struct {
 	Target struct {
-		LocalAddress stringValue `json:"local-address,omitempty"`
+		LocalAddress stringValue `json:"local_address,omitempty"`
 		ID           struct {
 			NodeName   *boolValue   `json:"node_name,omitempty"`
 			UserAgent  *boolValue   `json:"user_agent,omitempty"`
@@ -162,7 +162,7 @@ func (a *app) handleGrpcTunnel(ctx context.Context, txCfg *ndk.ConfigNotificatio
 	switch txCfg.GetOp() {
 	case ndk.SdkMgrOperation_Create:
 		a.handleGrpcTunnelCreate(ctx, txCfg.GetData())
-	case ndk.SdkMgrOperation_Change:
+	case ndk.SdkMgrOperation_Update:
 		a.handleGrpcTunnelChange(ctx, txCfg.GetData())
 	case ndk.SdkMgrOperation_Delete:
 		a.handleGrpcTunnelDelete(ctx)
@@ -221,7 +221,7 @@ func (a *app) handleDestination(ctx context.Context, txCfg *ndk.ConfigNotificati
 	switch txCfg.GetOp() {
 	case ndk.SdkMgrOperation_Create:
 		a.handleDestinationCreate(ctx, dName, txCfg.GetData())
-	case ndk.SdkMgrOperation_Change:
+	case ndk.SdkMgrOperation_Update:
 		a.handleDestinationChange(ctx, dName, txCfg.GetData())
 	case ndk.SdkMgrOperation_Delete:
 		a.handleDestinationDelete(ctx, dName)
@@ -272,7 +272,7 @@ func (a *app) handleTunnel(ctx context.Context, txCfg *ndk.ConfigNotification) {
 	switch txCfg.GetOp() {
 	case ndk.SdkMgrOperation_Create:
 		a.handleTunnelCreate(ctx, tn, txCfg.GetData())
-	case ndk.SdkMgrOperation_Change:
+	case ndk.SdkMgrOperation_Update:
 		a.handleTunnelChange(ctx, tn, txCfg.GetData())
 	case ndk.SdkMgrOperation_Delete:
 		a.handleTunnelDelete(ctx, tn)
@@ -350,7 +350,7 @@ func (a *app) handleTunnelDestination(ctx context.Context, txCfg *ndk.ConfigNoti
 	switch txCfg.GetOp() {
 	case ndk.SdkMgrOperation_Create:
 		a.handleTunnelDestinationCreate(ctx, tn, dn, txCfg.GetData())
-	case ndk.SdkMgrOperation_Change:
+	case ndk.SdkMgrOperation_Update:
 		a.handleTunnelDestinationChange(ctx, tn, dn, txCfg.GetData())
 	case ndk.SdkMgrOperation_Delete:
 		a.handleTunnelDestinationDelete(ctx, tn, dn)
@@ -402,7 +402,7 @@ func (a *app) handleTunnelTarget(ctx context.Context, txCfg *ndk.ConfigNotificat
 	switch txCfg.GetOp() {
 	case ndk.SdkMgrOperation_Create:
 		a.handleTunnelTargetCreate(ctx, tn, tg, txCfg.GetData())
-	case ndk.SdkMgrOperation_Change:
+	case ndk.SdkMgrOperation_Update:
 		a.handleTunnelTargetChange(ctx, tn, tg, txCfg.GetData())
 	case ndk.SdkMgrOperation_Delete:
 		a.handleTunnelTargetDelete(ctx, tn, tg)

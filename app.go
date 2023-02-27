@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/karimra/srl-ndk-demo/agent"
+	agent "github.com/karimra/srl-ndk-demo"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/encoding/prototext"
 )
