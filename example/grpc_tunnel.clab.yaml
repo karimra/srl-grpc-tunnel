@@ -15,7 +15,7 @@ topology:
     
     gnmic1:
       kind: linux
-      image: ghcr.io/karimra/gnmic:latest
+      image: ghcr.io/openconfig/gnmic:latest
       binds:
         - ./gnmic.yaml:/app/gnmic.yaml:ro
       cmd: '--config /app/gnmic.yaml --log subscribe --use-tunnel-server'
@@ -27,7 +27,7 @@ topology:
 
     gnmic2:
       kind: linux
-      image: ghcr.io/karimra/gnmic:latest
+      image: ghcr.io/openconfig/gnmic:latest
       binds:
         - ./gnmic.yaml:/app/gnmic.yaml:ro
       cmd: '--config /app/gnmic.yaml --log subscribe --use-tunnel-server'
