@@ -36,7 +36,7 @@ nfpms:
     formats:
       - rpm
     license: "BSD 2"
-    bindir: /opt/srlinux/usr/bin/
+    bindir: /usr/local/bin/
     contents:
       - src: ./yang/grpc-tunnel.yang
         dst: /opt/grpc-tunnel/yang/grpc-tunnel.yang
