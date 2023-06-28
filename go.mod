@@ -8,7 +8,7 @@ require (
 	github.com/openconfig/gnmi v0.0.0-20220617175856-41246b1b3507
 	github.com/openconfig/gnmic v0.29.0
 	github.com/openconfig/grpctunnel v0.0.0-20220819142823-6f5422b8ca70
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.3
 	github.com/vishvananda/netns v0.0.4
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.30.0
