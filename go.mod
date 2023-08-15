@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/karimra/srl-ndk-demo v0.1.1
 	github.com/nokia/srlinux-ndk-go v0.1.1
-	github.com/openconfig/gnmi v0.9.1
+	github.com/openconfig/gnmi v0.10.0
 	github.com/openconfig/gnmic v0.31.7
 	github.com/openconfig/grpctunnel v0.0.0-20220819142823-6f5422b8ca70
 	github.com/sirupsen/logrus v1.9.3
