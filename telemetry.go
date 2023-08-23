@@ -11,6 +11,7 @@ import (
 )
 
 func (a *app) updateTelemetryPathConfig(jsPath string, jsData string) {
+	log.Infof("updating: %s: %s", jsPath, jsData)
 	key := &ndk.TelemetryKey{JsPath: jsPath}
 	data := &ndk.TelemetryData{JsonContent: jsData}
 	info := &ndk.TelemetryInfo{Key: key, Data: data}

@@ -161,15 +161,28 @@ func (a *app) handleNwInstCfg(ctx context.Context, cfg *ndk.NetworkInstanceNotif
 func (a *app) handleGrpcTunnel(ctx context.Context, txCfg *ndk.ConfigNotification) {
 	switch txCfg.GetOp() {
 	case ndk.SdkMgrOperation_Create:
+		log.Infof("Create: .system.grpc_tunnel: %+v", txCfg)
 		a.handleGrpcTunnelCreate(ctx, txCfg.GetData())
 	case ndk.SdkMgrOperation_Update:
+		log.Infof("Update: .system.grpc_tunnel: %+v", txCfg)
 		a.handleGrpcTunnelChange(ctx, txCfg.GetData())
 	case ndk.SdkMgrOperation_Delete:
+		log.Infof("Delete: .system.grpc_tunnel: %+v", txCfg)
 		a.handleGrpcTunnelDelete(ctx)
 	}
 }
 
-func (a *app) handleGrpcTunnelCreate(ctx context.Context, cfgData *ndk.ConfigData) {}
+func (a *app) handleGrpcTunnelCreate(ctx context.Context, cfgData *ndk.ConfigData) {
+	newAppCfg := new(appConfig)
+	err := json.Unmarshal([]byte(cfgData.GetJson()), newAppCfg)
+	if err != nil {
+		log.Errorf("failed to unmarshal path %q config %+v", grpcTunnelPath, cfgData)
+		return
+	}
+	a.config.app = newAppCfg
+	a.config.app.OperState = operDown
+	a.updateRootLevelTelemetry(a.config.app)
+}
 
 func (a *app) handleGrpcTunnelChange(ctx context.Context, cfgData *ndk.ConfigData) {
 	// unmarshal changed config
@@ -185,7 +198,6 @@ func (a *app) handleGrpcTunnelChange(ctx context.Context, cfgData *ndk.ConfigDat
 	case a.config.app.AdminState == adminDisable && a.config.app.OperState == operUp:
 		// stop all tunnels
 		a.stopAll(ctx)
-		// TODO: update all telemetry
 		a.config.app.OperState = operDown
 	case a.config.app.AdminState == adminEnable && a.config.app.OperState != operUp:
 		// start all tunnels
