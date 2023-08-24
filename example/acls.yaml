@@ -22,3 +22,9 @@ updates:
           range:
             start: 57401  
             end: 57502
+
+  - path: /system/gnmi-server/unix-socket
+    encoding: json_ietf
+    value:
+      admin-state: enable
+      use-authentication: false

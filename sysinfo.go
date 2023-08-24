@@ -21,28 +21,28 @@ var sysInfoPaths = []*gnmi.Path{
 			{Name: "host-name"},
 		},
 	},
-	{
-		Elem: []*gnmi.PathElem{
-			{Name: "interface",
-				Key: map[string]string{"name": "mgmt0"},
-			},
-			{Name: "subinterface"},
-			{Name: "ipv4"},
-			{Name: "address"},
-			{Name: "status"},
-		},
-	},
-	{
-		Elem: []*gnmi.PathElem{
-			{Name: "interface",
-				Key: map[string]string{"name": "mgmt0"},
-			},
-			{Name: "subinterface"},
-			{Name: "ipv6"},
-			{Name: "address"},
-			{Name: "status"},
-		},
-	},
+	// {
+	// 	Elem: []*gnmi.PathElem{
+	// 		{Name: "interface",
+	// 			Key: map[string]string{"name": "mgmt0"},
+	// 		},
+	// 		{Name: "subinterface"},
+	// 		{Name: "ipv4"},
+	// 		{Name: "address"},
+	// 		{Name: "status"},
+	// 	},
+	// },
+	// {
+	// 	Elem: []*gnmi.PathElem{
+	// 		{Name: "interface",
+	// 			Key: map[string]string{"name": "mgmt0"},
+	// 		},
+	// 		{Name: "subinterface"},
+	// 		{Name: "ipv6"},
+	// 		{Name: "address"},
+	// 		{Name: "status"},
+	// 	},
+	// },
 	{
 		Elem: []*gnmi.PathElem{
 			{Name: "system"},
@@ -61,14 +61,11 @@ var sysInfoPaths = []*gnmi.Path{
 type systemInfo struct {
 	Name                string
 	Version             string
-	ChassisType         string
-	ChassisMacAddress   string
-	ChassisCLEICode     string
-	ChassisPartNumber   string
-	ChassisSerialNumber string
-	//NetworkInstance     string
-	IPAddrV4 string
-	IPAddrV6 string
+	ChassisType         string `json:"type,omitempty"`
+	ChassisMacAddress   string `json:"hw-mac-address,omitempty"`
+	ChassisCLEICode     string `json:"clei-code,omitempty"`
+	ChassisPartNumber   string `json:"part-number,omitempty"`
+	ChassisSerialNumber string `json:"serial-number,omitempty"`
 }
 
 func createGNMIClient(ctx context.Context) (gnmi.GNMIClient, error) {
@@ -84,7 +81,10 @@ func createGNMIClient(ctx context.Context) (gnmi.GNMIClient, error) {
 }
 
 func (a *app) getSystemInfo(ctx context.Context) (*systemInfo, error) {
-	ctx = metadata.AppendToOutgoingContext(ctx, "username", a.config.username, "password", a.config.password)
+	ctx = metadata.AppendToOutgoingContext(ctx,
+		"username", a.config.username,
+		"password", a.config.password,
+	)
 	sctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 START:
@@ -94,7 +94,7 @@ START:
 	default:
 		gnmiClient, err := createGNMIClient(sctx)
 		if err != nil {
-			log.Infof("failed to create a gnmi connection to %q: %v", gnmiServerUnixSocket, err)
+			log.Errorf("failed to create a gnmi connection to %q: %v", gnmiServerUnixSocket, err)
 			time.Sleep(retryInterval)
 			goto START
 		}
@@ -115,16 +115,6 @@ START:
 		for _, n := range rsp.GetNotification() {
 			for _, u := range n.GetUpdate() {
 				path := utils.GnmiPathToXPath(u.GetPath(), true)
-				if strings.HasPrefix(path, "interface") {
-					if strings.Contains(path, "/ipv4/address/status") {
-						ip := getPathKeyVal(u.GetPath(), "address", "ip-prefix")
-						sysInfo.IPAddrV4 = strings.Split(ip, "/")[0]
-					}
-					if strings.Contains(path, "/ipv6/address/status") {
-						ip := getPathKeyVal(u.GetPath(), "address", "ip-prefix")
-						sysInfo.IPAddrV6 = strings.Split(ip, "/")[0]
-					}
-				}
 				if strings.Contains(path, "system/name") {
 					sysInfo.Name = u.GetVal().GetStringVal()
 				}
@@ -151,13 +141,4 @@ START:
 		log.Debugf("system info: %+v", sysInfo)
 		return sysInfo, nil
 	}
-}
-
-func getPathKeyVal(p *gnmi.Path, elem, key string) string {
-	for _, e := range p.GetElem() {
-		if e.Name == elem {
-			return e.Key[key]
-		}
-	}
-	return ""
 }

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # download the RPM file
-wget -qL https://github.com/karimra/srl-grpc-tunnel/releases/download/v0.0.1/srl-grpc-tunnel_0.0.1_Linux_x86_64.rpm -P rpm/
+
+wget -qL https://github.com/karimra/srl-grpc-tunnel/releases/download/v0.0.1/srl-grpc-tunnel_0.1.5_Linux_x86_64.rpm -P rpm/
 
 #deploy the lab
 sudo clab deploy -t grpc_tunnel.clab.yaml --reconfigure 
