@@ -2,13 +2,13 @@
 
 SRL gRPC Tunnel is an [SR Linux](https://learn.srlinux.dev/) [NDK](https://learn.srlinux.dev/ndk/intro/) application that adds support for [Openconfig gRPC tunnel](https://github.com/openconfig/grpctunnel) to SR Linux.
 
-It acts as a gRPC tunnel client to allow access to locally configured targets (gNMI server, gNMI server, SSH server...)
+It acts as a gRPC tunnel client to allow access to locally configured targets (gNMI server, gNOI server, SSH server...)
 
-It connects to a gRPC tunnel server such as [gNMIc](https://gnmic.kmrd.dev/user_guide/tunnel_server/).
+It connects to a gRPC tunnel server such as [gNMIc](https://gnmic.openconfig.net/user_guide/tunnel_server/).
 
 ## Features
 
-* gRPC tunnel client handling gNMI, SSH and custom targets
+* gRPC tunnel client handles gNMI, SSH and custom targets
 
 * Both secure and insecure connections are supported
 
@@ -42,11 +42,10 @@ Copy the RPM file to your SR Linux instance and run (from bash)
 sudo rpm -i srl-grpc-tunnel_0.0.1_Linux_x86_64.rpm
 ```
 
-Start an `sr_cli` session and reload the application manager
+Reload the application manager
 
 ```bash
---{ + running }--[  ]--                                                                                                                                              
-A:srl1# tools system app-management application app_mgr reload
+sr_cli tools system app-management application app_mgr reload
 ```
 
 Check that the `grpc-tunnel` application is running
@@ -65,7 +64,7 @@ A:srl1#
 
 ## Configuration
 
-``` bash
+``` shell
 --{ + running }--[ system grpc-tunnel ]--                                                 
 A:srl1#                                                                                   
 Local commands:
@@ -76,7 +75,7 @@ Local commands:
 
 ### Destinations (gRPC Tunnel servers)
 
-```bash
+```shell
 --{ + running }--[ system grpc-tunnel ]--                                                 
 A:srl1# destination d1                                                                    
 usage: destination <name>
@@ -104,7 +103,7 @@ Setting a tls-profile on the client side is not implemented yet, by default the 
 
 To configure a gRPC tunnel destination `d1` run the below commands:
 
-```bash
+```shell
 enter candidate
 # create destination d1
 / system grpc-tunnel destination d1 
@@ -130,7 +129,7 @@ A:srl1#
 
 #### gNMI
 
-```bash
+```shell
 gnmic -a clab-grpc-tunnel-srl1 -u admin -p admin --skip-verify set \
     --update /system/grpc-tunnel/destination[name=d1]/address:::json_ietf:::172.20.20.2 \
     --update /system/grpc-tunnel/destination[name=d1]/port:::json_ietf:::57401 \
@@ -148,7 +147,7 @@ A max of 16 tunnels can be created, To each one, 16 destinations can be linked.
 
 To configure a gRPC tunnel `t1` run the below commands:
 
-```bash
+```shell
 enter candidate
 # create tunnel d1
 / system grpc-tunnel tunnel t1
@@ -159,7 +158,7 @@ commit now
 
 #### gNMI
 
-```bash
+```shell
 gnmic -a clab-grpc-tunnel-srl1 -u admin -p admin --skip-verify set \
     --update /system/grpc-tunnel/tunnel[name=t1]:::json_ietf:::'{"destination":{"name":"d1"}}'
 ```
@@ -180,10 +179,27 @@ Local commands:
   type              target type
 ```
 
-Add a target called tg1, type `grpc-server` with ID `node-name`
+The `id` and `type` are the unique identifiers used to register the target with the gRPC tunnel server.
+The `local-address` is used to customize the local handler behavior by changing the dialed address when a request is received through the tunnel.
+
+The target `id` values are:
+
+* `node-name`: The configure node host-name under `system name host-name`
+* `user-agent`: A custom string in the format `<node-name>:nokia-srl:<chassis>:<sw-version>`
+* `mac-address`: The node chassis mac address
+* `custom <string>`: A user defined string, or a Go template that uses the systemInfo struct as input.
+
+The target `type` values are:
+
+* `grpc-server`: This sets the target type to `GNMI_GNOI` when registering the target with the gRPC tunnel server. In this case, the `local-address` defaults to `unix:///opt/srlinux/var/run/sr_gnmi_server`.
+* `ssh-server`: This sets the target type to `SSH` when registering the target with the gRPC tunnel server. In this case, the `local-address` defaults to `localhost:22`.
+* `custom`: Sets a custom string or Go template as the target `type`. In this case setting the `local-address` is mandatory.
+
+E.g: Add a target called tg1, type `grpc-server` with ID `node-name`
+
 #### CLI
 
-```bash
+```shell
 enter candidate
 # add target with type `grpc-server`
 / system grpc-tunnel tunnel t1 target tg1 type grpc-server 
@@ -194,7 +210,7 @@ commit now
 
 #### gNMI
 
-```bash
+```shell
 gnmic -a clab-grpc-tunnel-srl1 -u admin -p admin --skip-verify set \
     --update /system/grpc-tunnel/tunnel[name=t1]/target[name=tg1]/type/grpc-server:::json_ietf:::'[null]' \
     --update /system/grpc-tunnel/tunnel[name=t1]/target[name=tg1]/id/node-name:::json_ietf:::'[null]'
@@ -204,7 +220,7 @@ gnmic -a clab-grpc-tunnel-srl1 -u admin -p admin --skip-verify set \
 
 #### CLI
 
-```bash
+```shell
 enter candidate
 # enable tunnel t1
 / system grpc-tunnel tunnel t1 admin-state enable
