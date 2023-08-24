@@ -104,10 +104,6 @@ type stringValue struct {
 	Value string `json:"value,omitempty"`
 }
 
-// type uint64Value struct {
-// 	Value uint64 `json:"value,omitempty"`
-// }
-
 type boolValue struct {
 	Value bool `json:"value,omitempty"`
 }

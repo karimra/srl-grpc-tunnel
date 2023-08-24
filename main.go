@@ -50,17 +50,28 @@ CRAGENT:
 
 	a := newApp(ctx, WithAgent(app))
 	//
-SYSINFO:
-	log.Info("getting system info...")
-	sysInfo, err := a.getSystemInfo(ctx)
-	if err != nil {
-		log.Errorf("failed to get system info %q: %v", agentName, err)
-		log.Infof("retrying in %s", retryInterval)
-		time.Sleep(retryInterval)
-		goto SYSINFO
-	}
-	log.Infof("system info: %+v", sysInfo)
-	a.config.sysInfo = *sysInfo
+	fmt.Println("goroutine1")
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				log.Info("getting system info...")
+				sysInfo, err := a.getSystemInfo(ctx)
+				if err != nil {
+					log.Errorf("failed to get system info %q: %v", agentName, err)
+					log.Infof("retrying in %s", retryInterval)
+					time.Sleep(retryInterval)
+					continue
+				}
+				log.Infof("system info: %+v", sysInfo)
+				a.config.sysInfo = *sysInfo
+				return
+			}
+		}
+	}()
 	log.Info("starting config handler...")
+	fmt.Println("goroutine1")
 	a.start(ctx)
 }
