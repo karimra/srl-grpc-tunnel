@@ -50,7 +50,6 @@ CRAGENT:
 
 	a := newApp(ctx, WithAgent(app))
 	//
-	fmt.Println("goroutine1")
 	go func() {
 		for {
 			select {
@@ -72,6 +71,5 @@ CRAGENT:
 		}
 	}()
 	log.Info("starting config handler...")
-	fmt.Println("goroutine1")
 	a.start(ctx)
 }
