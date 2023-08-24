@@ -83,7 +83,6 @@ func (a *app) startTunnel(ctx context.Context, tn string, tunnelConfig *tunnelCf
 	return nil
 }
 
-//
 func (a *app) stopTunnel(ctx context.Context, tn string) {
 	tuns, ok := a.tunnelClients[tn]
 	if !ok {
@@ -145,7 +144,6 @@ func (a *app) tunnelHandlerFunc(tn, dn string) func(t tunnel.Target, i io.ReadWr
 	}
 }
 
-//
 func (a *app) stopAll(ctx context.Context) {
 	for tn := range a.tunnelClients {
 		a.stopTunnel(ctx, tn)
@@ -170,7 +168,6 @@ func (a *app) startAll(ctx context.Context) {
 	}
 }
 
-//
 func (a *app) startTunnelDestination(ctx context.Context, tn, dn string, tunnelConfig *tunnelCfg, dest *destination, destState *destinationState) {
 	netIns := dest.Destination.NetworkInstance.Value
 	if netIns == "" {
@@ -377,6 +374,13 @@ func (a *app) stopTunnelHandlerDestination(ctx context.Context,
 }
 
 func (a *app) newTargetDetails(tg *target) (tunnelTargetDetails, error) {
+	for {
+		if a.config.sysInfo.Name == "" {
+			time.Sleep(time.Second / 2)
+			continue
+		}
+		break
+	}
 	var ttd tunnelTargetDetails
 	// ID
 	switch {
