@@ -34,7 +34,7 @@ jobs:
           TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: git config --global url."https://karimra:${TOKEN}@github.com".insteadOf "https://github.com"
       - name: Release with goreleaser
-        uses: goreleaser/goreleaser-action@v4
+        uses: goreleaser/goreleaser-action@v5
         with:
           version: latest
           args: release --clean -f .goreleaser.yml
