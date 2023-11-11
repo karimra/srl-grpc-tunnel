@@ -20,6 +20,12 @@ checksum:
   name_template: "checksums.txt"
 snapshot:
   name_template: "{{ .Tag }}"
+publishers:
+  - name: fury.io deb/rpm packages
+    ids:
+      - srl-grpc-tunnel-nfpms # this id belongs to nfpm section and is used to only upload artifacts from nfpm
+    dir: "{{ dir .ArtifactPath }}"
+    cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/srlinux/
 changelog:
   sort: asc
   filters:
@@ -42,13 +48,21 @@ nfpms:
     description: gRPC tunnel application for Nokia SR Linux
     formats:
       - rpm
+      - deb
     license: "BSD 2"
     bindir: /usr/local/bin/
     contents:
       - src: ./yang/grpc-tunnel.yang
         dst: /opt/grpc-tunnel/yang/grpc-tunnel.yang
+      - src: ./scripts/postinstall.sh
+        dst: /opt/grpc-tunnel/scripts/postinstall.sh
+      - src: ./scripts/postremove.sh
+        dst: /opt/grpc-tunnel/scripts/postremove.sh
       - src: ./yaml/grpc-tunnel.yaml
         dst: /etc/opt/srlinux/appmgr/grpc-tunnel.yml
+    scripts:
+      postinstall: "scripts/postinstall.sh"
+      postremove: "scripts/postremove.sh"
     overrides:
       rpm:
         scripts:
