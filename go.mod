@@ -7,7 +7,7 @@ require (
 	github.com/nokia/srlinux-ndk-go v0.1.1
 	github.com/openconfig/gnmi v0.10.0
 	github.com/openconfig/gnmic v0.33.0
-	github.com/openconfig/grpctunnel v0.0.0-20220819142823-6f5422b8ca70
+	github.com/openconfig/grpctunnel v0.1.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/vishvananda/netns v0.0.4
 	google.golang.org/grpc v1.59.0
