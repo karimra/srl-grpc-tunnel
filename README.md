@@ -30,16 +30,17 @@ For an automated lab deployment with 2 SR Linux, 2 gNMIc (tunnel server), a Prom
 
 ### Manual installation
 
-Download the pre build RPM file from the repo's [release page](https://github.com/karimra/srl-grpc-tunnel/releases), or run:
+Download the pre build .deb file from the repo's [release page](https://github.com/karimra/srl-grpc-tunnel/releases), or run:
 
 ```bash
-wget https://github.com/karimra/srl-grpc-tunnel/releases/download/v0.0.1/srl-grpc-tunnel_0.0.1_Linux_x86_64.rpm
+version=0.1.8
+wget https://github.com/karimra/srl-grpc-tunnel/releases/download/v${version}/srl-grpc-tunnel_${version}_Linux_x86_64.deb
 ```
 
-Copy the RPM file to your SR Linux instance and run (from bash)
+Copy the .deb file to your SR Linux instance and run (from bash)
 
 ```bash
-sudo rpm -i srl-grpc-tunnel_0.0.1_Linux_x86_64.rpm
+sudo dpkg -i srl-grpc-tunnel_${version}_Linux_x86_64.deb
 ```
 
 Reload the application manager
@@ -63,6 +64,22 @@ A:srl1#
 ```
 
 ## Configuration
+
+This application relies on SRL's gNMI server unix socket to serve sessions towards GNMI_GNOI targets. It should be enabled before starting the grpc-tunnel application.
+
+```shell
+enter candidate
+# enable the gnmi-server unix-socket
+/ system gnmi-server unix-socket admin-state enable
+# disable authentication (optional)
+/ system gnmi-server unix-socket use-authentication false
+# enable gNMI and gNOI (optional) services
+/ system gnmi-server unix-socket services [ gnmi gnoi ]
+# commit
+commit now
+```
+
+The application configuration has 3 sections; its `admin-state`, the list of `destinations` and the `tunnels`
 
 ``` shell
 --{ + running }--[ system grpc-tunnel ]--                                                 
@@ -231,7 +248,7 @@ commit now
 
 ```bash
 gnmic -a clab-grpc-tunnel-srl1 -u admin -p admin --skip-verify set \
-    --update /system/grpc-tunnel/tunnel[name=t1]/admin-state:::json_ietf:::enable \
+    --update /system/grpc-tunnel/tunnel[name=t1]/admin-state:::json_ietf:::enable
 ```
 
 ## State

@@ -3,9 +3,9 @@ name: grpc-tunnel
 topology:
   kinds:
     srl:
-      image: ghcr.io/nokia/srlinux:latest
+      image:  ghcr.io/nokia/srlinux:23.10.1
       binds:
-        - ./rpm:/tmp/rpm:ro
+        - ./pkg:/tmp/pkg:ro
 
   nodes:
     srl1:
