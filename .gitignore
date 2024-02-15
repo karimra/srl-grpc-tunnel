@@ -15,6 +15,7 @@ private
 tests
 builds
 rpm
+pkg
 docs
 dist
 example/clab-*

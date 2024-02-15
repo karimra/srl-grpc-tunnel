@@ -21,7 +21,7 @@ updates:
         admin-state: enable
         destination: 
           - name: d1
-          - name: d2
+          # - name: d2
         target:
           name: tg1
           id:

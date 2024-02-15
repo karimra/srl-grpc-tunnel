@@ -6,5 +6,3 @@ if [[ $appmgr != "not running" ]]
 then
     sr_cli tools system app-management application app_mgr reload
 fi
-
-gorele  
